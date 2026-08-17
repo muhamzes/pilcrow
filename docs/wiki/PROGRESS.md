@@ -350,9 +350,16 @@ Open `/settings`, switch themes and modes, and confirm: no flash on reload (espe
 
 ## Phase 6 — R2 uploads + Resend emails · Partial · 2026-07-31
 
-**BLOCKED ON CREDENTIALS.** R2 and Resend are unconfigured ([ISSUE-016](ISSUES.md),
-[ISSUE-017](ISSUES.md)), so the happy paths are unverified. Everything up to the
-integration point is built and tested.
+**Superseded 2026-08-02 — no longer blocked.** R2 is configured and verified end
+to end against production ([ISSUE-016](ISSUES.md), Resolved). Resend is
+configured; only its delivery leg is unproven, because the sending domain is
+unverified and Resend will deliver solely to the account owner
+([ISSUE-017](ISSUES.md), Open).
+
+The paragraph below is the original 2026-07-31 entry, kept for the record:
+
+> **BLOCKED ON CREDENTIALS.** R2 and Resend are unconfigured, so the happy paths
+> are unverified. Everything up to the integration point is built and tested.
 
 **Built and verified**
 
@@ -658,8 +665,8 @@ verification order. Nothing in it requires a code change.
 | `lint` / `type-check` / `build` | pass |
 | `verify:attachments` | pass — 33/33 |
 | `verify:storage` | pass — rejection paths hold |
-| Picker, drag-drop, paste, remove all behave | **NEEDS HUMAN VERIFICATION** — no credentials, so no upload completes |
-| The PUT to R2 | **BLOCKED** — ISSUE-016, awaiting credentials |
+| Picker, drag-drop, paste, remove all behave | **NEEDS HUMAN VERIFICATION** (as of 2026-07-31) |
+| The PUT to R2 | **Resolved 2026-08-02** — verified against production, `verify:upload` 9/9 (ISSUE-016) |
 
 ## Away session — Priority 3 · Adversarial self-review · 2026-07-31
 

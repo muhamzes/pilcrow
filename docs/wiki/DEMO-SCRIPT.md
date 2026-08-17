@@ -28,9 +28,9 @@ npm run dev
       it public.
 - [ ] **Have a second browser window** already on `/admin/providers`, so the
       switch at 1:40 is instant rather than three clicks of navigation.
-- [ ] **Do not open the paperclip.** File storage is not configured; the button
-      is correctly disabled, and lingering on it invites the one question you
-      cannot answer well.
+- [ ] **The paperclip works** — R2 is configured and verified against production
+      (ISSUE-016). Attaching an image and letting the model describe it is a
+      strong beat if you have time for it.
 
 Record at **1920×1080**, and keep the browser at a normal zoom — 110% if the
 text looks small on playback.
@@ -121,7 +121,7 @@ started is what shows the default was a choice.
 
 **Say:**
 
-> Eight themes, light and dark, per user. The default is a risograph print
+> Seven themes, light and dark, per user. The default is a risograph print
 > look — paper stock rather than a white page, and two real Riso inks. The
 > interesting bit is that there's no flash on load: both token sets are
 > server-rendered and a tiny inline script resolves the system preference before
@@ -213,19 +213,21 @@ rotate the key on camera.
 
 **Say:**
 
-> Next.js 16, Supabase with row-level security on all twelve tables, TypeScript
-> strict throughout. No test framework — twenty-four suites, just over a thousand
-> assertions, every one against the real database or the real running server.
-> Code's in the description.
+> Next.js 16, Supabase with row-level security on all thirteen tables, TypeScript
+> strict throughout. No test framework — a verification harness of thirty-nine
+> scripts, over eight hundred assertions, every one against the real database or
+> the real running server. Code's in the description.
 
 ---
 
 ## Things to say only if asked
 
-- **"Is it finished?"** — No, and the repo says so. File uploads are built and
-  tested up to the storage call and are waiting on credentials. The
+- **"Is it finished?"** — No, and the repo says so. Google OAuth is in the spec
+  and is not implemented. Four of the five Resend senders have no call site, so
+  Supabase's own mailer does the real work. CI does not gate the deploy. The
   accessibility audit needs a browser I can't automate.
-- **"Why no tests?"** — There are 1,085 assertions; there is no *framework*. The
+- **"Why no tests?"** — There are over 800 assertions; there is no *framework*,
+  and I'd call it a verification harness rather than a test suite. The
   bugs this project actually hit — an RLS policy that recursed, a query that
   returned the oldest rows instead of the newest, an unauthenticated POST
   answering 200 with an HTML page — are not the kind a mocked unit test catches.

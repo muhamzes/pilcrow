@@ -16,6 +16,38 @@ Known bugs, blockers, and technical debt. **Newest entries at the top.**
 
 ---
 
+### ISSUE-074 — Documentation described the verification harness as a test suite
+
+**Status:** Resolved 2026-08-16 | **Severity:** Low | **Phase:** — | **Opened:** 2026-08-16 | **Resolved:** 2026-08-16
+
+**Problem:** README, SHOWCASE, ARCHITECTURE, CONTRIBUTING, DEMO-SCRIPT and the CI job name all called `scripts/` a "test suite", and quoted four mutually inconsistent sizes for it — "24 suites, 1,085 assertions", "Sixteen scripts, ~370 assertions", "all 23 suites", "29 suites, 1,536 assertions". None matched the repository: there are **39** `verify:*` scripts and no test framework, runner, `.spec.ts` or `.test.ts` anywhere. The README also documented a `verify:riso` script that does not exist, and no script implements the Riso-scoping check it claimed.
+
+The framing mattered more than the arithmetic. "Test suite" implies a runner, coverage and a gate; this is a hand-rolled assertion harness with none of those, and **CI runs only 11 of the 39** because one Supabase project backs local, CI and production ([ISSUE-015](#issue-015)).
+
+**Resolution:** Renamed throughout to "verification harness", corrected every count to the counted value, stated the CI subset and what a green badge does *not* cover, dropped the `verify:riso` row, and renamed the CI job to `Verification harness (credential-free subset)`. Dated session logs (`OVERNIGHT-*.md`) were left alone — their counts were correct when written.
+
+### ISSUE-073 — Documented gaps against the spec: OAuth, Resend senders, CI deploy
+
+**Status:** Open — documented, not fixed | **Severity:** Medium | **Phase:** — | **Opened:** 2026-08-16 | **Resolved:** —
+
+**Problem:** Three things the spec asks for are absent or partial, and the docs did not say so. Recorded here so they are known rather than discovered:
+
+1. **Google OAuth is not implemented.** [docs/00-PROJECT-SPEC.md](../00-PROJECT-SPEC.md) asks for "email/password + Google OAuth". There is no `signInWithOAuth` call anywhere in the codebase; authentication is email/password only (`app/(auth)/actions.ts`).
+2. **Four of the five Resend senders are unreachable.** `lib/email/send.ts` exports `sendWelcomeEmail`, `sendPasswordResetEmail`, `sendMagicLinkEmail`, `sendNewLoginEmail` and `sendAdminAlertEmail`. Only `sendNewLoginEmail` has a call site (`app/(auth)/actions.ts`). Supabase Auth's built-in mailer sends the signup confirmation and the password reset, so the constitution's "all transactional email via Resend" is not true of this build. Related: [ISSUE-017](#issue-017) (delivery leg) and the SMTP routing note there.
+3. **CI does not gate the deploy.** The `deploy` job is `if: false` and Railway auto-deploys from GitHub independently, so a red build does not stop a release. Deliberate — enabling both races two deployments per merge — but it means no doc should describe a CI-gated pipeline. Related: [ISSUE-027](#issue-027).
+
+**Resolution:** None of the three is fixed. Each is now stated in the README's **Known gaps** section and in `DEMO-SCRIPT.md`'s "if asked" list. Fixing (1) is an adapter plus a Supabase provider config; (2) is either wiring the senders or routing Supabase SMTP through Resend; (3) needs Railway auto-deploy turned off first.
+
+### ISSUE-072 — Stale "NOT CONFIGURED" banners and doc claims contradicted the code
+
+**Status:** Resolved 2026-08-16 | **Severity:** Medium | **Phase:** 6 | **Opened:** 2026-08-16 | **Resolved:** 2026-08-16
+
+**Problem:** `lib/r2/storage.ts` and `lib/email/send.ts` both carried a `⚠️ NOT CONFIGURED IN THIS ENVIRONMENT` banner, and the README said file storage was "blocked on credentials (ISSUE-016), and the button is correctly disabled". All of it was false by 2026-08-02: [ISSUE-016](#issue-016) is Resolved and production-verified, and both services have their variables in `.env.local` and Railway. `PROGRESS.md` and `ROADMAP.md` still led with "BLOCKED ON CREDENTIALS", and `DEMO-SCRIPT.md` instructed the presenter not to open a paperclip that works. The README also said "Eight themes" where `lib/theme/presets.ts` defines seven, and `docs/SHOWCASE.md` carried a metrics table stale on every row (12 tables, 21 migrations, 93 commits).
+
+A stale "not configured" banner is worse than no banner: it trains the reader to distrust the comments, and it is exactly the confusion [ISSUE-065](#issue-065) hid behind.
+
+**Resolution:** Both banners rewritten to describe the real state — R2 configured with a private bucket, Resend configured with an unverified sending domain and only one wired sender. README, PROGRESS, ROADMAP, DEMO-SCRIPT and SHOWCASE corrected; theme count fixed to seven; SHOWCASE metrics recounted. Historical entries were superseded in place with the original kept quoted, rather than rewritten.
+
 ### ISSUE-071 — GitHub dormancy can silently disable the Supabase keep-alive
 
 **Status:** Open — **cut from the 2026-08-03 batch, design attached** | **Severity:** Medium | **Phase:** 8 | **Opened:** 2026-08-03
@@ -1032,7 +1064,7 @@ Original concern below.
 **Status:** Resolved | **Severity:** Low | **Phase:** 1 | **Opened:** 2026-07-30 | **Resolved:** 2026-07-30
 **Problem:** `shadcn init` wrote `--font-sans: var(--font-sans)` into the `@theme inline` block in `app/globals.css`. A variable defined as itself resolves to nothing, so `font-sans` fell through to the browser default and the whole app rendered in Times-style serif — not the Geist the layout loads, and not the "refined typography" the spec calls for.
 **Found by:** looking at the running app during the Phase 1 browser walkthrough. Lint, type-check, build and all 41 automated checks passed with this bug present — nothing in the current suite can see rendered output.
-**Resolution:** Point the theme variables at the names `app/layout.tsx` actually defines (`--font-geist-sans` / `--font-geist-mono`). Worth remembering that visual regressions are invisible to this test suite; Phase 7's Lighthouse pass is the first automated check that would plausibly catch a class of them.
+**Resolution:** Point the theme variables at the names `app/layout.tsx` actually defines (`--font-geist-sans` / `--font-geist-mono`). Worth remembering that visual regressions are invisible to this verification harness; Phase 7's Lighthouse pass is the first automated check that would plausibly catch a class of them.
 
 ### ISSUE-008 — Seed script crashed on a null-valued system setting
 

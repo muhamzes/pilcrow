@@ -68,13 +68,15 @@ that a build never needs runtime config, and that job is what keeps it true — 
 build that needs credentials is a build that breaks on every fresh deploy
 ([ISSUE-014](docs/wiki/ISSUES.md)).
 
-## Running the full suite
+## Running the verification harness
 
-There is no test framework. Every check is a script against the real database,
-the real running server, or the real source.
+There is no test framework and no test suite. Every check is one of 39
+`verify:*` scripts run against the real database, the real running server, or the
+real source. CI runs only the credential-free subset (11 of the 39), so passing CI
+is not the same as a clean local run.
 
 ```bash
-npm run dev            # six of the suites need a server
+npm run dev            # the server-dependent scripts need this running
 
 npm run verify:authz         # no route or action shipped without an auth gate
 npm run verify:api           # every route refuses bad input and other users

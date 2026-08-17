@@ -7,14 +7,16 @@ Pending action items and what comes after the eight planned phases.
 Current state and the resume point live at the top of [PROGRESS.md](PROGRESS.md).
 In priority order:
 
-1. **Add R2 and Resend credentials** ([ISSUE-016](ISSUES.md), [ISSUE-017](ISSUES.md), [ISSUE-003](ISSUES.md)) — the only thing blocking a phase. Everything up to the integration point is built and tested; [PHASE-6-CHECKLIST.md](PHASE-6-CHECKLIST.md) is the exact sequence and needs no code change.
+1. **Confirm Resend delivery** ([ISSUE-017](ISSUES.md)) — R2 and Resend credentials are both in place, and R2 is verified end to end against production ([ISSUE-016](ISSUES.md), Resolved). What remains is a verified sending domain: until one exists, Resend delivers only to the account owner. Separately, four of the five senders in `lib/email/send.ts` still have no call site.
 2. **Visual sign-offs** — the attachment UI, the analytics charts with demo data, and the export links. All built, none seen by a human.
-3. **Screenshots** for the README (`npm run seed -- --demo` first) and then the LinkedIn post.
+3. **Screenshots** for the README (`npm run seed -- --demo` first).
 4. **Decide on deploy gating** ([ISSUE-027](ISSUES.md)) — prepared, not applied, with a recommendation to leave it alone for now.
 5. **Phase 7 leftovers** — the performance pass and accessibility audit still need a browser and Lighthouse, so they stay unmeasurable headlessly.
 
-Phases 1–5 complete, 6 blocked on credentials, 7 partial, 8 done. `main` is
-protected: every change goes through a pull request with CI green.
+Phases 1–5 complete, 6 configured (Resend delivery unproven), 7 partial, 8 done.
+`main` is protected: every change goes through a pull request with CI green.
+Note that CI reports but does not gate the deploy — the `deploy` job is
+`if: false` and Railway ships from GitHub independently ([ISSUE-027](ISSUES.md)).
 
 **Operational note:** `ENCRYPTION_MASTER_KEY` is load-bearing. Every provider key
 in the database is encrypted with it — lose it and they must all be re-entered.

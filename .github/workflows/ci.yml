@@ -51,8 +51,13 @@ jobs:
       - name: Bundle budget
         run: npm run verify:bundle
 
+  # This is a VERIFICATION HARNESS, not a test suite: 39 hand-written
+  # `verify:*` scripts run by tsx, no framework and no runner. Only the
+  # credential-free subset runs here, so a green badge on this job covers
+  # roughly a quarter of the harness and none of the database, RLS or
+  # streaming checks. Do not read it as "tests pass".
   tests:
-    name: Tests (credential-free)
+    name: Verification harness (credential-free subset)
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -67,13 +72,13 @@ jobs:
       - name: Install
         run: npm ci
 
-      # ⚠️ Only the suites that need NO database and NO network run here.
+      # ⚠️ Only the scripts that need NO database and NO network run here.
       #
       # The others (verify:rls, verify:admin, verify:chat, …) are deliberately
       # excluded: verify:admin MUTATES shared state — it disables a provider
       # and breaks a stored key, restoring both in `finally`. There is one
       # Supabase project behind local, CI and production, so a CI run that died
-      # mid-suite would disable a provider for real users (ISSUE-015).
+      # mid-script would disable a provider for real users (ISSUE-015).
       #
       # To enable them, create a SEPARATE Supabase project for CI, add its
       # credentials as repository secrets, and add a job that runs them against

@@ -36,12 +36,12 @@ tree and fails if a vendor SDK import or a provider name appears outside
 
 | | |
 | --- | --- |
-| TypeScript | 26,280 lines across 160 files, strict mode |
-| Database | 12 tables, all with row-level security, 21 committed migrations |
-| Verification | 29 suites, 1,536 assertions, run by one command |
-| History | 93 commits across 8 phases and 51 pull requests |
+| TypeScript | 35,249 lines across 189 files, strict mode — of which ~11k lines are the verification harness in `scripts/`, not product code |
+| Database | 13 tables, all with row-level security, 22 policies, 25 committed migrations |
+| Verification harness | 39 `verify:*` scripts, over 800 assertions, run by one command — no test framework |
+| History | 133 commits across 8 phases and 91 pull requests |
 | Decisions recorded | 26 |
-| Issues opened | 39, of which 10 remain — none of them a code defect |
+| Issues opened | 72, of which 35 remain |
 
 ## Stack
 
@@ -105,14 +105,17 @@ rather than leaking.
 
 ---
 
-## The testing story
+## The verification story
 
-**There is no test framework.** Every check is a script that exercises the real
-database, the real running server, or the real source. That is a deliberate
-choice, and the reason is empirical: the bugs this project actually hit were not
-the kind a mocked unit test catches.
+**There is no test framework and no test suite** — this is a verification
+harness: 39 hand-written `verify:*` scripts, each exercising the real database,
+the real running server, or the real source. That is a deliberate choice, and the
+reason is empirical: the bugs this project actually hit were not the kind a mocked
+unit test catches. It is worth saying plainly that a harness is not a substitute
+for a suite — there is no coverage measurement, and CI runs only the 11
+credential-free scripts.
 
-The rule the suite is built on: **assert stored state, not response shape.**
+The rule the harness is built on: **assert stored state, not response shape.**
 
 Three examples of why:
 

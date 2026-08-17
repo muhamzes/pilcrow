@@ -7,8 +7,13 @@ models, per-user theming, usage analytics and an audit trail.
 Built with Next.js 16 (App Router), Supabase (Postgres + Auth + RLS), and
 Tailwind. TypeScript throughout, strict mode, no `any` in the core paths.
 
-[![CI](https://github.com/MyChat99/myaichat/actions/workflows/ci.yml/badge.svg)](https://github.com/MyChat99/myaichat/actions/workflows/ci.yml)
+[![CI](https://github.com/muhamzes/myaichat/actions/workflows/ci.yml/badge.svg)](https://github.com/muhamzes/myaichat/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+> **Built with AI assistance (Claude Code).** Architecture, security model, and
+> debugging decisions are documented in the wiki
+> ([docs/wiki/DECISIONS.md](docs/wiki/DECISIONS.md),
+> [docs/wiki/ISSUES.md](docs/wiki/ISSUES.md)).
 
 ---
 
@@ -25,7 +30,7 @@ Tailwind. TypeScript throughout, strict mode, no `any` in the core paths.
   same thread
 - **Markdown with syntax-highlighted code**, sanitised against XSS, one-click copy
 - **Conversation management** — search, rename, pin, delete
-- **Eight themes** in light and dark. Seven are palettes; the default, **Riso**,
+- **Seven themes** in light and dark. Six are palettes; the default, **Riso**,
   is a whole design system — a masthead instead of a navbar brand, conversations
   as bordered slips with a model stamp, 2px ink keylines and offset shadows
   instead of soft elevation, numbered picks, a boxed COMPOSE panel. Plus accent
@@ -72,7 +77,7 @@ npm run dev
 | File | Screen | Capture it in this state |
 | --- | --- | --- |
 | `chat.png` | `/` or `/c/<id>` | **Mid-stream, in Riso (the default) — this is the hero shot.** Send "Explain closures with an example", capture while tokens are still arriving so the cursor is visible. Model selector in shot. Sidebar showing several named conversations, not "New chat" ×3. Riso is what a first-time visitor sees, so the hero image should be it. |
-| `themes.png` | `/settings` | **Riso in dark mode**, where the ink turns fluorescent pink against near-black. The live preview panel visible, and enough of the picker in frame to show the other seven. Capturing a *different* theme here than in `chat.png` is the point — one image proves there is a default, two prove it is a choice. |
+| `themes.png` | `/settings` | **Riso in dark mode**, where the ink turns fluorescent pink against near-black. The live preview panel visible, and enough of the picker in frame to show the other six. Capturing a *different* theme here than in `chat.png` is the point — one image proves there is a default, two prove it is a choice. |
 | `admin-providers.png` | `/admin/providers` | **After pressing Test connection**, so the green result and latency are on screen. Both provider cards visible with masked keys (`••••••••` + last four). |
 | `admin-analytics.png` | `/admin/analytics` | The **30-day** range, so all three charts have shape. With demo data seeded this shows real variation rather than a flat line. |
 
@@ -83,9 +88,9 @@ Practical notes:
   do not mind it public, worth signing in as a demo account if you do.
 - A key's last four **is** rendered by design and is safe to show; the key
   itself never reaches the browser.
-- Do not capture the composer's paperclip as though it works — file storage is
-  blocked on credentials ([ISSUE-016](docs/wiki/ISSUES.md)), and the button is
-  correctly disabled.
+- The composer's paperclip works — R2 is configured and verified end to end
+  against production ([ISSUE-016](docs/wiki/ISSUES.md), resolved). It disables
+  itself only on a deployment where the `R2_*` variables are absent.
 
 <!--
   Once the files exist:
@@ -98,10 +103,10 @@ Six alternative interface concepts, as self-contained HTML, live in
 
 ## Status
 
-**Live and working.** Phases 1–5 complete, 8 complete, 7 partial. **Phase 6
-(file uploads and email) is built and tested up to the integration point and
-waiting on credentials** — the paperclip in the composer is correctly disabled
-until they exist.
+**Live and working.** Phases 1–5 complete, 8 complete, 7 partial. Phase 6 (file
+uploads and email) is configured: R2 is verified end to end against production
+([ISSUE-016](docs/wiki/ISSUES.md), resolved), and Resend is configured with its
+delivery leg still unproven ([ISSUE-017](docs/wiki/ISSUES.md)).
 
 Two things are known and open: refresh-token reuse detection is off, which is a
 Supabase dashboard setting ([ISSUE-028](docs/wiki/ISSUES.md)), and the
@@ -113,9 +118,35 @@ behind every non-obvious choice is
 [docs/wiki/DECISIONS.md](docs/wiki/DECISIONS.md), including the arguments
 against.
 
-**There is no test framework.** 24 suites, 1,085 assertions, every one against
-the real database, the real running server or the real source — a deliberate
+**There is no test framework and no test suite.** What exists is a
+**verification harness**: 39 hand-written `verify:*` scripts under
+[scripts/](scripts/), asserting against the real database, the real running
+server or the real source. No `.spec.ts`, no `.test.ts`, no runner. A deliberate
 choice, and the reasoning is in [Verification](#verification).
+
+### Known gaps
+
+Stated here rather than left to be discovered, because the spec in
+[docs/00-PROJECT-SPEC.md](docs/00-PROJECT-SPEC.md) asks for all three:
+
+- **Google OAuth is not implemented.** The spec calls for it; there is no
+  `signInWithOAuth` call anywhere in the codebase. Authentication is
+  email/password only ([app/(auth)/actions.ts](app/(auth)/actions.ts)).
+- **Resend is barely wired in.** Five templates and five send functions exist in
+  [lib/email/send.ts](lib/email/send.ts); only `sendNewLoginEmail` has a call
+  site. Supabase Auth's built-in mailer handles signup confirmation and password
+  reset, so "all transactional email through Resend" is **not** true of this
+  build. The other four senders render and pass contrast checks but are never
+  invoked.
+- **CI does not deploy.** The `deploy` job in
+  [.github/workflows/ci.yml](.github/workflows/ci.yml) is `if: false`. Railway
+  deploys from GitHub on its own, **ungated by the CI checks above it** — so a
+  red build does not stop a release. This is a deliberate trade to avoid two
+  racing deployments per merge, explained in that file, but it means there is no
+  CI-gated pipeline. Do not read the CI badge as a deploy gate.
+- **One Supabase project** backs local development, CI and production
+  ([ISSUE-015](docs/wiki/ISSUES.md)) — the reason most of the harness is
+  excluded from CI.
 
 ### Where to start reading
 
@@ -182,28 +213,50 @@ a migration, update that file in the same commit.**
 
 ## Verification
 
-No test framework. Sixteen scripts, ~370 assertions, each exercising something
-real — the bugs this project actually hit were not the kind a mocked unit test
-catches. The pattern throughout is **assert stored state, not response shape**:
-several real defects here produced responses indistinguishable from success.
+**This is a verification harness, not a test suite.** There is no test
+framework, no runner, and no `.spec.ts` or `.test.ts` file in the repository —
+39 hand-written `verify:*` scripts in [scripts/](scripts/), run by `tsx`, each
+exercising something real. Over 800 assertions in total. Ten of the 39 drive
+Playwright directly, as a library rather than as a test runner.
+
+The bugs this project actually hit were not the kind a mocked unit test catches,
+so the pattern throughout is **assert stored state, not response shape**: several
+real defects here produced responses indistinguishable from success.
+
+Calling it a test suite would oversell it in two specific ways worth being
+explicit about — there is no coverage measurement, and nothing runs on a
+pre-commit hook.
 
 ```bash
 npm run lint && npm run type-check && npm run build
 
-npm run verify:all              # all 23 suites, in a safe order
+npm run verify:all              # all 39 scripts, in a safe order
 npm run verify:all -- --offline # only the ones needing no server
 ```
 
 `verify:all` refuses to start if a previous run left the database dirty, and
-re-checks after each suite that mutates shared state — so a leak is reported by
+re-checks after each script that mutates shared state — so a leak is reported by
 the run that caused it rather than the next one to trip over it.
+
+**In CI, only the credential-free subset runs** — 11 of the 39 scripts
+(`verify:theme`, `verify:email`, `verify:headers`, `verify:authz`,
+`verify:attachments`, `verify:degradation`, `verify:resilience`,
+`verify:logging`, `verify:csv`, `verify:session`, plus `verify:bundle` in the
+build job). The rest need a database, a running server or provider keys, and are
+excluded on purpose: there is one Supabase project behind local, CI and
+production, and `verify:admin` mutates shared state, so a CI run that died
+mid-script could disable a provider for live users
+([ISSUE-015](docs/wiki/ISSUES.md)). **A green CI badge therefore covers about a
+quarter of the harness**, and none of the database, RLS or streaming checks.
+
+The table below is a selection, not the full 39 — `npm run` lists them all.
 
 | Script | Proves | Needs |
 |---|---|---|
 | `verify:authz` | no action or route was shipped without an auth gate | — |
 | `verify:headers` | the security-header and CSP configuration | — |
 | `verify:theme` | WCAG AA contrast across every theme, both modes | — |
-| `verify:riso` | the Riso design system is scoped so it cannot reach another theme | — |
+| `verify:boundaries` | no server render calls a function that lives on the client | — |
 | `verify:email` | email templates render and meet contrast | — |
 | `verify:schema` | every table, view and function exists | database |
 | `verify:rls` | user A cannot read or write user B's rows | database |
@@ -335,11 +388,17 @@ successful.
 files in `supabase/migrations/` to the linked project. There is currently one
 Supabase project for local and production (ISSUE-015).
 
-**CI** runs lint, type-check, formatting, build and the credential-free test
-suites on every PR. The Railway deploy job in `.github/workflows/ci.yml` is
-disabled on purpose — Railway deploys from GitHub directly, and enabling both
-would produce two racing deployments per merge. The comment in that file explains
-how to switch.
+**CI** runs lint, type-check, formatting, build and the credential-free subset of
+the verification harness on every PR.
+
+**CI does not gate the deploy, and nothing here should be read as a pipeline.**
+The `deploy` job in `.github/workflows/ci.yml` is `if: false`. Railway deploys
+from GitHub on its own, which means a merge ships whether or not the checks above
+it went green. That is a deliberate trade — enabling both would produce two
+racing deployments per merge — and the comment in that file gives the three steps
+to move deployment behind the gates. Until step 1 of those is done, disabled is
+the correct state, but the honest description is "CI reports, Railway ships",
+not "CI deploys".
 
 ## Project layout
 
@@ -349,11 +408,11 @@ app/(app)/       protected shell, chat root, /admin
 lib/db/          Supabase clients, session refresh, generated-ish types
 lib/security/    auth gates, Zod schemas
 lib/providers/   LLM adapters — the only place a vendor SDK is imported
-lib/r2/          object storage (Phase 6, awaiting credentials)
+lib/r2/          object storage — configured, private bucket, presigned URLs
 lib/theme/       theme tokens, CSS generation, contrast maths
 components/      chat, admin, theming, motion, command palette
-emails/          Resend templates (Phase 6, awaiting credentials)
-scripts/         seed + the sixteen verification scripts
+emails/          Resend templates — configured; only the new-login send is wired
+scripts/         seed + the 39-script verification harness
 supabase/        migrations, committed and applied in order
 docs/wiki/       progress, issues, decisions, roadmap
 docs/mockups/    six self-contained interface concepts

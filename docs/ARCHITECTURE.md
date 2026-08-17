@@ -368,9 +368,11 @@ checked automatically rather than needing a new test.
 
 ## Verification
 
-There is no unit-test framework. Every check is a script that exercises the real
-database, the real server or the real source, because the bugs this project has
-actually hit were not the kind a mocked unit test catches.
+There is no unit-test framework and no test suite. What exists is a verification
+harness of 39 `verify:*` scripts, each exercising the real database, the real
+server or the real source, because the bugs this project has actually hit were not
+the kind a mocked unit test catches. CI runs only the 11 credential-free scripts;
+the rest need a database, a server or provider keys.
 
 | Script | What it proves | Needs |
 |---|---|---|
