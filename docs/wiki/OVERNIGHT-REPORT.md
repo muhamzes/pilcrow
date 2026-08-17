@@ -743,8 +743,8 @@ and one paste when you want it.
    leave it.
 6. **Screenshots** — `npm run seed -- --demo` first, then the four in the README
    table, which names the *state* to capture each in.
-7. **LinkedIn** — three drafts in [LINKEDIN-DRAFTS.md](LINKEDIN-DRAFTS.md),
-   two placeholders to fill.
+7. **LinkedIn** — three drafts were prepared here; the file has since been
+   removed from the repository as personal material.
 
 ---
 
@@ -926,7 +926,7 @@ contains no matching literal.
 4. **ISSUE-028** — one toggle, then `npm run verify:session -- --strict`
 5. **Deploy gating** — [ISSUE-027](ISSUES.md); my recommendation is still *not yet*
 6. **Screenshots** — `npm run seed -- --demo` first
-7. **LinkedIn** — [LINKEDIN-DRAFTS.md](LINKEDIN-DRAFTS.md)
+7. **LinkedIn** — drafts prepared, since removed from the repository
 
 ---
 
@@ -1127,7 +1127,7 @@ Unchanged and accumulating — none blocks anything.
    *not yet*
 5. **Screenshots + demo recording** → `npm run seed -- --demo`, then the README
    table and [DEMO-SCRIPT.md](DEMO-SCRIPT.md)
-6. **LinkedIn** → [LINKEDIN-DRAFTS.md](LINKEDIN-DRAFTS.md), after step 0
+6. **LinkedIn** → drafts prepared, since removed from the repository
 
 ---
 
