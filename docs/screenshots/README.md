@@ -1,14 +1,21 @@
 # Screenshots
 
-Generated, not hand-captured — regenerate with `npm run shoot` against a running
-dev server. Committed so the look can be reviewed in a pull request without
-anyone having to run the app.
+Mostly generated rather than hand-captured — regenerate with `npm run shoot`
+against a running dev server. Committed so the look can be reviewed in a pull
+request without anyone having to run the app.
 
 | | |
 | --- | --- |
 | `riso-light-*` | the default theme, and the design target (`docs/mockups/05-riso.html`) |
 | `riso-dark-*` | the same structure at night |
 | `default-light-*` | a second preset, as evidence the Riso treatment is contained |
+
+Four are hand-captured, because they need a signed-in session and a thread with
+real content in it: `chat.png`, `model-selector.png`, `admin-providers.png` and
+`long-thread.png`. These are the four the README leads with, for readers who
+cannot sign in to the deployment. `shoot` does not produce them and will not
+overwrite them. What to check before committing one is in the
+[README](../../README.md#screenshots) — they are taken while authenticated.
 
 ```bash
 npm run shoot                        # riso, light
