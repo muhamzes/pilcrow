@@ -16,6 +16,28 @@ Known bugs, blockers, and technical debt. **Newest entries at the top.**
 
 ---
 
+### ISSUE-075 — Which repository Railway deploys from is unverified, and one remote is 9 commits stale
+
+**Status:** Open | **Severity:** High | **Phase:** 8 | **Opened:** 2026-08-17 | **Resolved:** —
+
+**Problem:** There are two remotes and nothing in the repository says which one Railway builds from.
+
+```
+origin    https://github.com/MyChat99/myaichat.git    main = 303d518
+personal  https://github.com/muhamzes/pilcrow.git     main = 89a5f8c   ← local main tracks this
+```
+
+`origin/main` is **9 commits behind** `personal/main`, and has nothing `personal/main` lacks. So one of two things is true, and they have opposite consequences:
+
+- Railway watches `muhamzes/pilcrow` → pushes to `personal/main` deploy, and everything is fine.
+- Railway watches `MyChat99/myaichat` → **production is running code 9 commits old, and pushing to `personal/main` ships nothing.**
+
+The live hostname does not settle it. The disabled deploy job in [ci.yml](../../.github/workflows/ci.yml) targets `--service myaichat`, and Railway derives `myaichat-production.up.railway.app` from that *service* name — a service keeps its name after its source repository is re-pointed, so the URL is evidence of the service's name and nothing else. `ci.yml` says "Railway is already connected directly to this repository", but it was written before the move to `muhamzes/pilcrow` (4367596) and "this repository" was a different one then.
+
+Not resolvable from inside the repository: there is no Railway config file in-tree, no `RAILWAY_TOKEN` in the environment, and none of the 9 commits changes anything observable over HTTP, so the live site cannot be fingerprinted against them either.
+
+**Resolution:** Open. Check Railway → the service → **Settings → Source** and read the connected repository and branch. Then either push to that remote, or re-point Railway and push both. Worth recording here once known, because every future "why has the deploy not updated" starts at this same question.
+
 ### ISSUE-074 — Documentation described the verification harness as a test suite
 
 **Status:** Resolved 2026-08-16 | **Severity:** Low | **Phase:** — | **Opened:** 2026-08-16 | **Resolved:** 2026-08-16

@@ -18,6 +18,18 @@ Stack choices already fixed by [CLAUDE.md](../../CLAUDE.md) (Next.js, Supabase, 
 
 ---
 
+### DEC-023 — The closed door points at the repository, not at a request-access form
+
+**Date:** 2026-08-17 | **Phase:** — | **Status:** Active
+
+**Decision:** The sign-in form states `This is an invite-only demo.` and links to `github.com/muhamzes/pilcrow`, describing what is there (screenshots and an architecture write-up). Copy and comments only in [app/(auth)/auth-form.tsx](../../app/(auth)/auth-form.tsx) — the paragraph reuses the text-plus-link shape the sign-up mode already had, sits outside the `<form>`, and touches no auth state. The gate itself is unchanged.
+
+**Why:** The live URL is published, so most people who reach `/login` are reading rather than signing in, and they cannot get in — signups are closed ([signup-policy.ts](../../lib/security/signup-policy.ts)). The previous copy, `Accounts are by invitation.`, told them the door was locked and stopped there, which reads as a broken link rather than a deliberate access control. Naming what is on the other side is what makes the click worth making.
+
+**Rejected:** a request-access form or a contact address. There is no such form, and offering one would be a second door that does not open — the same failure as the "Create one" link this copy already replaced. Also rejected: opening signups, or any change to the gate, encryption or RLS.
+
+**Tradeoff:** The invite-only claim is now asserted in two places — this copy and the `signups_enabled` setting that actually enforces it. Reopening signups makes the copy wrong without breaking anything, and nothing checks the two agree. `/signup` stays functional for that day, as before.
+
 ### DEC-022 — An answer's price is stored, linked, and never inferred
 
 **Date:** 2026-08-02 | **Phase:** 7 | **Status:** Active
