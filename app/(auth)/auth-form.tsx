@@ -31,10 +31,17 @@ const COPY = {
      * form that refuses them. Stating the policy is kinder than offering a door
      * that does not open. /signup stays functional for when it reopens — this
      * is copy, not a route change.
+     *
+     * The link points at the repository, deliberately not at a request-access
+     * form: there is no such form, and implying one would be a second door that
+     * does not open. This screen is the end of the road for anyone without an
+     * account — the live URL is published, so most people who reach it are
+     * reading rather than signing in. Naming what is on the other side is what
+     * makes the click worth making.
      */
-    footer: 'Accounts are by invitation.',
-    footerHref: undefined,
-    footerLink: undefined,
+    footer: 'This is an invite-only demo.',
+    footerHref: 'https://github.com/muhamzes/pilcrow',
+    footerLink: 'Screenshots and an architecture write-up are on GitHub.',
   },
   signup: {
     title: 'Create account',
@@ -122,9 +129,12 @@ export function AuthForm({ mode, action, next, notice }: Props) {
           <SubmitButton mode={mode} />
         </form>
 
-        {/* A footer with no link is a statement, not an invitation to click.
-            Sign-in says "Accounts are by invitation."; sign-up still links back
-            to sign-in, so the pair is not a dead end. */}
+        {/* Subordinate to the submit button on purpose: muted, small, and below
+            the form, so it reads as a note rather than a second action. It is
+            outside the <form> and touches no auth state — sign-in behaves
+            exactly as it did. Sign-in states the policy and points off-site;
+            sign-up links back to sign-in. Neither offers a way to ask for
+            access, because there is not one. */}
         <p className="text-muted-foreground mt-6 text-center text-sm">
           {copy.footer}
           {copy.footerHref && copy.footerLink ? (
