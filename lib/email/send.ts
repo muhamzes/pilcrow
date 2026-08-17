@@ -14,11 +14,22 @@ import {
 /**
  * Transactional email.
  *
- * ⚠️ RESEND IS NOT CONFIGURED IN THIS ENVIRONMENT. `isEmailConfigured()` is the
- * single flag. When it is false, mail is RENDERED and logged rather than sent —
- * a console transport, which is standard for local development and means the
- * templates and the calling code are exercised for real. Only delivery is
- * faked. See ISSUES.md ISSUE-017 for what to add.
+ * `isEmailConfigured()` is the single flag. When it is false, mail is RENDERED
+ * and logged rather than sent — a console transport, which is standard for
+ * local development and means the templates and the calling code are exercised
+ * for real. Only delivery is faked.
+ *
+ * Resend is configured in `.env.local` and in Railway. One caveat worth knowing
+ * before trusting the senders below: the configured `RESEND_FROM_EMAIL` is on
+ * an unverified domain, so Resend delivers only to the address that owns the
+ * account (ISSUE-017).
+ *
+ * ⚠️ FOUR OF THE FIVE SENDERS HERE HAVE NO CALL SITE. Only `sendNewLoginEmail`
+ * is wired up (`app/(auth)/actions.ts`). Supabase Auth's own mailer sends the
+ * signup confirmation and the password reset, so `sendWelcomeEmail`,
+ * `sendPasswordResetEmail`, `sendMagicLinkEmail` and `sendAdminAlertEmail` are
+ * rendered and contrast-checked by `verify:email` but never invoked in
+ * production. Treat them as ready-to-wire, not as active paths.
  */
 
 export type EmailResult = { sent: boolean; transport: 'resend' | 'console'; error?: string };

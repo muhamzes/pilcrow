@@ -19,9 +19,14 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
  * and downloads both go through short-lived presigned URLs, which is what makes
  * "direct bucket URLs do not work" true rather than aspirational.
  *
- * ⚠️ NOT CONFIGURED IN THIS ENVIRONMENT. `isStorageConfigured()` is the single
- * flag; callers must check it and degrade rather than throwing at users. See
- * ISSUES.md ISSUE-016 for exactly which variables to add.
+ * `isStorageConfigured()` is the single flag for whether R2 credentials are
+ * present. Callers MUST check it and degrade rather than throwing at users —
+ * a deployment without the four `R2_*` variables is a supported state, not a
+ * broken one, and the composer's paperclip disables itself with a reason.
+ *
+ * Configured and verified end-to-end against production (ISSUE-016, resolved
+ * 2026-08-02): presign, a real cross-origin PUT, retrieval, and the model
+ * reading the stored object.
  */
 
 const UPLOAD_URL_TTL_SECONDS = 60 * 5; // long enough to upload, short enough to be useless if leaked
