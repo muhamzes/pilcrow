@@ -1,0 +1,11 @@
+# Canonical identity for this repository's history.
+#
+# The project was committed under two author identities and two project-only
+# email addresses. They are one person. `git shortlog`, `git log --use-mailmap`
+# and GitHub's contributor view read this file and collapse them.
+#
+# The canonical address is the GitHub noreply form, so commits attribute to the
+# profile without publishing a personal mailbox in a public repository.
+
+Muhammad Bin Zeeshan <234987694+muhamzes@users.noreply.github.com> MyChat99 <MyAiChatbot@proton.me>
+Muhammad Bin Zeeshan <234987694+muhamzes@users.noreply.github.com> Muhammad Bin Zeeshan <myaichatbot@proton.me>
