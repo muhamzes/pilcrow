@@ -22,7 +22,7 @@ bound by it too.
 ## Getting set up
 
 ```bash
-git clone https://github.com/MyChat99/myaichat.git
+git clone https://github.com/muhamzes/pilcrow.git
 cd myaichat
 npm install
 cp .env.example .env.local     # fill in your own Supabase project

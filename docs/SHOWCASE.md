@@ -3,7 +3,7 @@
 For a technical reader who wants to know what was built, how it holds together,
 and what state it is actually in. No hype, and the unfinished parts are named.
 
-**Live:** `myaichat-production.up.railway.app` · **Repo:** `github.com/MyChat99/myaichat`
+**Live:** `myaichat-production.up.railway.app` · **Repo:** `github.com/muhamzes/pilcrow`
 
 ---
 

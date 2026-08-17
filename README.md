@@ -7,7 +7,7 @@ models, per-user theming, usage analytics and an audit trail.
 Built with Next.js 16 (App Router), Supabase (Postgres + Auth + RLS), and
 Tailwind. TypeScript throughout, strict mode, no `any` in the core paths.
 
-[![CI](https://github.com/muhamzes/myaichat/actions/workflows/ci.yml/badge.svg)](https://github.com/muhamzes/myaichat/actions/workflows/ci.yml)
+[![CI](https://github.com/muhamzes/pilcrow/actions/workflows/ci.yml/badge.svg)](https://github.com/muhamzes/pilcrow/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 > **Built with AI assistance (Claude Code).** Architecture, security model, and
