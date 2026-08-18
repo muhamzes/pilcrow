@@ -16,6 +16,18 @@ Known bugs, blockers, and technical debt. **Newest entries at the top.**
 
 ---
 
+### ISSUE-076 — `npm run shoot` cannot produce four of the six shots its own README table specifies
+
+**Status:** Open | **Severity:** Low | **Phase:** 7 | **Opened:** 2026-08-17 | **Resolved:** —
+
+**Problem:** The README's capture table names six files. `scripts/shoot.ts` can produce none of them under those names: it writes a fixed set (`<theme>-<scheme>-{empty-state,settings,conversation,sidebar}.png`), has no output-name override, never visits `/admin`, and never interacts with the page — so no mid-stream frame, no opened model selector, no scrolled thread. `chat.png`, `model-selector.png`, `admin-providers.png` and `long-thread.png` were referenced by the README but had never existed on disk, rendering as four broken images on GitHub.
+
+**Resolution:** The four broken `![...](...)` lines were removed from README.md rather than left broken. `themes.png` now exists, copied from the `riso-dark-settings.png` that `shoot` generates — it matches the table's row for that file exactly (Riso dark, `/settings`, all seven preset swatches and the accent picker in frame).
+
+Nine hand-captured shots were then imported from outside the repo and added to README.md, which covers two of the table's rows in substance: `model-picker.png` (listbox open, three provider groups) and `admin-analytics.png` (30-day range, all three charts with shape). Still uncovered: **`chat.png`** (needs a live mid-stream frame), **`long-thread.png`** (needs a scrolled thread with the scroll-to-bottom pill), and **`admin-providers.png`** (needs `/admin/providers` after a test connection — the imported `admin-overview.png` shows provider health but not the masked-key cards). Either capture those three by hand or extend `shoot.ts` with interaction and an output-name flag.
+
+---
+
 ### ISSUE-075 — Which repository Railway deploys from is unverified, and one remote is 9 commits stale
 
 **Status:** Open | **Severity:** High | **Phase:** 8 | **Opened:** 2026-08-17 | **Resolved:** —

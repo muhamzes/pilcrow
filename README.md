@@ -54,24 +54,10 @@ Tailwind. TypeScript throughout, strict mode, no `any` in the core paths.
 The deployment is invite-only, so these are the way in for anyone without an
 account.
 
-![Streaming chat, mid-response](docs/screenshots/chat.png)
+![The appearance panel, Riso in dark mode](docs/screenshots/themes.png)
 
-_Chat mid-response — tokens still arriving, with the conversation sidebar and the
-model selector in frame._
-
-![The model selector, open](docs/screenshots/model-selector.png)
-
-_The model selector open: every enabled model, grouped under the provider that
-serves it._
-
-![Provider and API-key management](docs/screenshots/admin-providers.png)
-
-_Admin provider management — each stored key masked to its last four, beside the
-result of a live test connection._
-
-![A long conversation thread](docs/screenshots/long-thread.png)
-
-_A long thread scrolled back, with the cost and token count under the answers._
+_The appearance panel in Riso dark — the live swatches for all seven presets, the
+accent picker, and the fluorescent pink ink against near-black._
 
 ### The theme presets, generated rather than captured
 
@@ -87,6 +73,48 @@ _A long thread scrolled back, with the cost and token count under the answers._
 
 The three above are the same route, the same data and the same viewport — the
 only difference is the stored theme. That is the whole claim of the theming work.
+
+### The rest of the app, captured by hand
+
+![The model picker, open](docs/screenshots/model-picker.png)
+
+_The model picker open, every enabled model grouped under the provider that
+serves it — Anthropic, OpenAI and Perplexity from one list._
+
+![Presses, before asking](docs/screenshots/presses-empty.png)
+
+_Presses before a question: pick any subset of models and the footer states the
+cost up front — two presses, one prompt, billed 2×._
+
+![Presses, three answers side by side](docs/screenshots/presses-answered.png)
+
+_The same prompt answered by three models at once, each column carrying its own
+token counts and latency, with the cheapest and the first to answer called out._
+
+![The appearance panel](docs/screenshots/appearance-themes.png)
+
+_Appearance: seven presets, light/dark/system, and an accent picker that reports
+its own contrast ratio against WCAG AA._
+
+![The profile avatar picker](docs/screenshots/profile-avatar.png)
+
+_Profile in Pulp — eight generated letterpress marks as avatars, or upload a
+photo to replace them._
+
+![The admin overview](docs/screenshots/admin-overview.png)
+
+_Admin overview — spend against the monthly ceiling, the database keep-alive
+ping, and a live per-provider health check proved by a real one-token call._
+
+![The analytics dashboard](docs/screenshots/admin-analytics.png)
+
+_Analytics over 30 days: messages per day, tokens by model, and estimated cost
+split by provider._
+
+![Admin system settings](docs/screenshots/admin-settings.png)
+
+_System settings — default model, per-user rate and token limits, closed
+sign-ups with a domain allowlist, and the monthly spend ceiling._
 
 ### Capturing the hand-shot four
 
